@@ -105,12 +105,7 @@ namespace FixedTextMaker
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.FileName = "DATAFILE";
-            //ofd.InitialDirectory = @"C:\";
-<<<<<<< HEAD
             ofd.InitialDirectory = Environment.CurrentDirectory;
-=======
-            ofd.InitialDirectory = @"C:\";
->>>>>>> e3646e1dee7337aacbd4b10b2aadcdc93afd9ee1
             ofd.Filter = "txt csv(*.txt;*.csv)|*.txt;*.csv|すべてのファイル(*.*)|*.*";
             ofd.FilterIndex = 2;
             ofd.Title = "開くファイルを選択してください";

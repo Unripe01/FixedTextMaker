@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FixedTextMaker.Model;
-using System.Xml.Serialization;
+﻿using FixedTextMaker.Model;
 using System.IO;
+using System.Text;
+using System.Xml.Serialization;
 
 namespace FixedTextMaker.Data
 {
@@ -19,14 +15,13 @@ namespace FixedTextMaker.Data
         public static FixedTextDefines Load( string path )
         {
             var xmlSerializer = new XmlSerializer(typeof(FixedTextDefines));
-            FixedTextDefines result;
             var xmlSettings = new System.Xml.XmlReaderSettings();
             using (var streamReader = new StreamReader(path, Encoding.UTF8))
             using (var xmlReader = System.Xml.XmlReader.Create(streamReader, xmlSettings))
             {
-                result = (FixedTextDefines)xmlSerializer.Deserialize(xmlReader);
+                var result = xmlSerializer.Deserialize(xmlReader) as FixedTextDefines;
+                return result;
             }
-            return result;
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
+﻿using FixedTextMaker.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using FixedTextMaker.Model;
 
 namespace FixedTextMaker.Data
 {
@@ -18,28 +17,28 @@ namespace FixedTextMaker.Data
         private readonly int KeyLength;
         public bool HasCrLf { get; private set; }
 
-        private TextDataAdapter() {
+
+        #region コンストラクタ
+        private TextDataAdapter()
+        {
             HasCrLf = true;
         }
 
         public TextDataAdapter(FixedTextDefines defines) : this()
         {
             TextDefines = defines;
-            int start = 0;
+            //int start = 0;
             KeyLength = 1;
             bool hasKey = false;
-            foreach (var item in defines.Records.First().Items)
+
+            var record = defines.Records.First();
+            var item = record.Items.SingleOrDefault(v => v.Recognition);
+            if (item != null)
             {
-                if (item.Recognition)
-                {
-                    KeyLength = item.Length;
-                    hasKey = true;
-                    break;
-                }
-                start += item.Length;
+                KeyLength = item.Length;
+                hasKey = true;
+                KeyStart = record.Items.Sum(v => v.Length);
             }
-            KeyStart = start;
-            if (!hasKey) KeyStart = 0;
         }
 
         public TextDataAdapter(FixedTextDefines defines, string dataText) : this(defines)
@@ -59,11 +58,10 @@ namespace FixedTextMaker.Data
                 {
                     var kind = GetRecordKind(firstKeyValue);
                     var sb = new StringBuilder();
-                    foreach (var item in kind.Items)
-                    {
+                    kind.Items.ForEach(item => {
                         sb.Append(dataText.Substring(textIndex, item.Length));
                         textIndex += item.Length;
-                    }
+                    });
                     DataRecords.Add(sb.ToString());
                 }
                 catch (ArgumentOutOfRangeException)
@@ -73,19 +71,16 @@ namespace FixedTextMaker.Data
                 }
             }
         }
+        #endregion
 
-        public string GetParsedText() {
+        public string GetParsedText()
+        {
             var sb = new StringBuilder();
-            foreach (var textLine in DataRecords)
+            DataRecords.ForEach(t =>
             {
-                if (HasCrLf)
-                {
-                    sb.Append(textLine);
-                } else
-                {
-                    sb.AppendLine(textLine);
-                }
-            }
+                sb.Append(t);
+                if (HasCrLf) { sb.Append(Environment.NewLine); }
+            });
             return sb.ToString();
         }
 
@@ -95,7 +90,7 @@ namespace FixedTextMaker.Data
         /// <param name="rowIndex"></param>
         /// <param name="columnIndex"></param>
         /// <returns></returns>
-        public TextDataInfo GetTextItem( int rowIndex, int cursorIndex )
+        public TextDataInfo GetTextItem(int rowIndex, int cursorIndex)
         {
             //TODO：テキストが挿入された状態と合わせなければならない、もしくはテキストボックス側を直計算する
             var info = new TextDataInfo();
@@ -121,7 +116,7 @@ namespace FixedTextMaker.Data
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public string GetKey( string line )
+        public string GetKey(string line)
         {
             if (line.Length < KeyLength) return "";
             return line.Substring(KeyStart, KeyLength);
@@ -132,11 +127,11 @@ namespace FixedTextMaker.Data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public FixedTextRecord GetRecordKind( string key )
+        public FixedTextRecord GetRecordKind(string key)
         {
             foreach (var record in TextDefines.Records)
             {
-                if (record.Items.Where(v=> v.Recognition).Where(item => item.FixedText == key).Any())
+                if (record.Items.Any(v => v.Recognition && v.FixedText == key))
                 {
                     return record;
                 }
