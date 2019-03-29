@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Panel panelTop;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextMaker));
             this.btnAddRow = new System.Windows.Forms.Button();
             this.btnOpenDataFile = new System.Windows.Forms.Button();
             this.btnOpenDefinitionFile = new System.Windows.Forms.Button();
@@ -107,8 +108,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.MyTextBox);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
-            this.splitContainer1.Size = new System.Drawing.Size(724, 612);
-            this.splitContainer1.SplitterDistance = 295;
+            this.splitContainer1.Size = new System.Drawing.Size(724, 568);
+            this.splitContainer1.SplitterDistance = 273;
             this.splitContainer1.TabIndex = 1;
             // 
             // tabControlMain
@@ -117,7 +118,7 @@
             this.tabControlMain.Location = new System.Drawing.Point(0, 0);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(720, 291);
+            this.tabControlMain.Size = new System.Drawing.Size(720, 269);
             this.tabControlMain.TabIndex = 0;
             // 
             // MyTextBox
@@ -128,7 +129,8 @@
             this.MyTextBox.Location = new System.Drawing.Point(3, 3);
             this.MyTextBox.Margin = new System.Windows.Forms.Padding(10);
             this.MyTextBox.Name = "MyTextBox";
-            this.MyTextBox.Size = new System.Drawing.Size(714, 303);
+            this.MyTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.MyTextBox.Size = new System.Drawing.Size(714, 281);
             this.MyTextBox.TabIndex = 0;
             this.MyTextBox.Text = "";
             this.MyTextBox.WordWrap = false;
@@ -171,10 +173,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 678);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip2);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(panelTop);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TextMaker";
             this.Text = "固定テキストメーカー";
             this.Load += new System.EventHandler(this.TextMaker_Load);

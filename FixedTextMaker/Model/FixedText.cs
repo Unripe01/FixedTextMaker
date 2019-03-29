@@ -80,7 +80,7 @@ namespace FixedTextMaker.Model
 
         private string nameField;
 
-        private byte lengthField;
+        private int lengthField;
 
         private string padcharField;
 
@@ -106,7 +106,7 @@ namespace FixedTextMaker.Model
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute("length")]
-        public byte Length
+        public int Length
         {
             get
             {
