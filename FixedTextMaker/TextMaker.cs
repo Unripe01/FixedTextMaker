@@ -138,11 +138,12 @@ namespace FixedTextMaker
         /// </summary>
         private void richTextBox_SelectionChanged(object sender, EventArgs e)
         {
-            int row, col;
-            GetRowColIndex(MyTextBox, out row, out col);
-            NotificationStatus($"{row}行　{col}列");
+            Tuple<int, int> caretIndex = GetRowColIndex(MyTextBox);
+            NotificationStatus(string.Format("{0}行　{1}列", caretIndex.Item1, caretIndex.Item2));
             BindTab();
             ((Control)sender).Focus();
+
+            this.selectedItemHighLight();
         }
 
         private void NotificationStatus(string message)
@@ -153,14 +154,14 @@ namespace FixedTextMaker
         /// <summary>
         /// 行列取得
         /// </summary>
-        private void GetRowColIndex( RichTextBox tb, out int rowIndex, out int colIndex )
+        private Tuple<int, int> GetRowColIndex(RichTextBox tb)
         {
             //文字列
             string str = tb.Text;
             //カレットの位置を取得
             int selectPos = tb.SelectionStart;
             //カレットの位置までの行を数える
-            rowIndex = 0;
+            int rowIndex = 0;
             int startPos = 0;
             for (int endPos = 0;
                 (endPos = str.IndexOf('\n', startPos)) < selectPos && endPos > -1;
@@ -169,7 +170,9 @@ namespace FixedTextMaker
                 startPos = endPos + 1;
             }
             //列の計算
-            colIndex = selectPos - startPos;
+            int colIndex = selectPos - startPos;
+
+            return Tuple.Create<int, int>(rowIndex, colIndex);
         }
 
         /// <summary>
@@ -223,9 +226,8 @@ namespace FixedTextMaker
         /// <returns></returns>
         private string GetSelectedLine()
         {
-            int row, col;
-            GetRowColIndex(MyTextBox, out row, out col);
-            return MyTextBox.Text.Split('\n').ElementAt(row);
+            Tuple<int, int> caretIndex = GetRowColIndex(MyTextBox);
+            return MyTextBox.Text.Split('\n').ElementAt(caretIndex.Item1);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -260,6 +262,41 @@ namespace FixedTextMaker
             DefinedItems = LoadDefinedItems(@"FixedDefinitionXML.xml");
             MyTextDataAdapter = new TextDataAdapter(DefinedItems);
             MakeControls(DefinedItems);
+        }
+
+        /// <summary>
+        /// 選択項目を強調表示します。
+        /// </summary>
+        private void selectedItemHighLight()
+        {
+            // 選択中のタブを取得
+            TabPage page = this.tabControlMain.SelectedTab;
+
+            // タブに配置されたテキストボックスの背景色をクリア
+            foreach (Panel panel in page.Controls)
+            {
+                foreach (LabelText lt in panel.Controls)
+                {
+                    lt.BackColor = SystemColors.Control;
+                }
+            }
+
+            // キャレットの位置を取得
+            Tuple<int, int> caretIndex = this.GetRowColIndex(MyTextBox);
+
+            // キャレット位置の項目のテキストボックスの背景色を変更
+            foreach (Panel panel in page.Controls)
+            {
+                foreach (LabelText lt in panel.Controls)
+                {
+                    if (lt.StartIndex <= caretIndex.Item2 && (lt.StartIndex + lt.ItemLength) > caretIndex.Item2)
+                    {
+                        lt.BackColor = Color.Salmon;
+
+                        break;
+                    }
+                }
+            }
         }
     }
 }
