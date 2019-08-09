@@ -183,10 +183,10 @@ namespace FixedTextMaker
             if (MyTextDataAdapter == null) return;
             var line = GetSelectedLine();
             if (line.Length == 0)return;
-
-            var key = MyTextDataAdapter.GetKey(line);
+            
             try
             {
+                var key = MyTextDataAdapter.GetKey(line);
                 var record = MyTextDataAdapter.GetRecordKind(key);
                 tabControlMain.SelectTab(record.Name);
                 var labellTextList = tabControlMain.SelectedTab.Controls.OfType<Panel>().First()
